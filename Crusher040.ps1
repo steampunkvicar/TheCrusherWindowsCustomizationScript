@@ -4,15 +4,14 @@
 
 ### THE CRUSHER v0.40###
 
-Powershell script for imaging PCs at Beverly Hospital. v0.40
+Powershell script for imaging PCs at ####### Hospital. v0.40
 
 
 
 .DESCRIPTION
 
 We are, regrettably, still on PS2.0, which is not terribly helpful. Even so, here's a 
-shot at streamlining our process. This script automates a number of steps from Chrissy 
-Knowles' checklist:
+shot at streamlining our process. This script automates a number of steps from C######'s checklist:
 	* Sets the Windows Update Service to start automatically
 	* Enables password required on recovery from standby
 	* Turn off all sleep modes and disable disk shutdown
@@ -63,8 +62,8 @@ powercfg -SETACVALUEINDEX SCHEME_BALANCED SUB_NONE CONSOLELOCK 1
 powercfg -SETDCVALUEINDEX SCHEME_BALANCED SUB_NONE CONSOLELOCK 1
 powercfg -SETACVALUEINDEX scheme_balanced sub_sleep hybridsleep 0
 powercfg -SETDCVALUEINDEX scheme_balanced sub_sleep hybridsleep 0
-powercfg -setacvalueindex scheme_balanced sub_disk diskidle 0
-powercfg -setdcvalueindex scheme_balanced sub_disk diskidle 0
+powercfg -SETACVALUEINDEX scheme_balanced sub_disk diskidle 0
+powercfg -SETDCVALUEINDEX scheme_balanced sub_disk diskidle 0
 
 # Disable Windows Search and Remote Differential Compression
 
@@ -77,36 +76,36 @@ dism /online /disable-feature /FeatureName:MSRDC-Infrastructure /norestart
 	reg load 'HKLM\ntuser' $ntuserlocation
 
 	# Creating path to Groupwise Integrations for new users
-	new-item -path hklm:\ntuser\Software\Novell 
-	new-item -path hklm:\ntuser\Software\Novell\GroupWise 
-	new-item -path hklm:\ntuser\Software\Novell\GroupWise\Client 
-	new-item -path hklm:\ntuser\Software\Novell\GroupWise\Client\Library
+	New-Item -path hklm:\ntuser\Software\Novell 
+	New-Item -path hklm:\ntuser\Software\Novell\GroupWise 
+	New-Item -path hklm:\ntuser\Software\Novell\GroupWise\Client 
+	New-Item -path hklm:\ntuser\Software\Novell\GroupWise\Client\Library
 
 	# Creating path to Start Menu for new users
-	new-item -path hklm:\ntuser\Software
-	new-item -path hklm:\ntuser\Software\Microsoft
-	new-item -path hklm:\ntuser\Software\Microsoft\Windows
-	new-item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion
-	new-item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion\Policies
-	new-item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+	New-Item -path hklm:\ntuser\Software
+	New-Item -path hklm:\ntuser\Software\Microsoft
+	New-Item -path hklm:\ntuser\Software\Microsoft\Windows
+	New-Item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion
+	New-Item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion\Policies
+	New-Item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
 
 	# Creating path to Groupwise Integrations for current user
-	new-item -path hkcu:\Software\Novell 
-	new-item -path hkcu:\Software\Novell\GroupWise 
-	new-item -path hkcu:\Software\Novell\GroupWise\Client 
-	new-item -path hkcu:\Software\Novell\GroupWise\Client\Library
+	New-Item -path hkcu:\Software\Novell 
+	New-Item -path hkcu:\Software\Novell\GroupWise 
+	New-Item -path hkcu:\Software\Novell\GroupWise\Client 
+	New-Item -path hkcu:\Software\Novell\GroupWise\Client\Library
     
-    # Creating path to Add Run Command to Start Menu for new users
-    new-item -path hklm:\ntuser\Software
-    new-item -path hklm:\ntuser\Software\Microsoft
-    new-item -path hklm:\ntuser\Software\Microsoft\Windows
-    new-item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion
-    new-item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion\Policies
-    new-item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+    	# Creating path to Add Run Command to Start Menu for new users
+    	New-Item -path hklm:\ntuser\Software
+    	New-Item -path hklm:\ntuser\Software\Microsoft
+    	New-Item -path hklm:\ntuser\Software\Microsoft\Windows
+    	New-Item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion
+    	New-Item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion\Policies
+    	New-Item -path hklm:\ntuser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
 
 	# Disabling Groupwise Integrations for current and new users
-	new-itemproperty -path HKCU:\Software\Novell\Groupwise\Client\Library\ -name Integrations -propertytype string -value Disabled
-	new-itemproperty -path hklm:\ntuser\Software\Novell\Groupwise\Client\Library\ -name Integrations -propertytype string -value Disabled
+	New-ItemProperty -path HKCU:\Software\Novell\Groupwise\Client\Library\ -name Integrations -propertytype string -value Disabled
+	New-ItemProperty -Path hklm:\ntuser\Software\Novell\Groupwise\Client\Library\ -name Integrations -propertytype string -value Disabled
 
 	# Add Run command to Start Menu
 	New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name ForceRunOnStartMenu -Value '0x00000001' -PropertyType 'DWord'
