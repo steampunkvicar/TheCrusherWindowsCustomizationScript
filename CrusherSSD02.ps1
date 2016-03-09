@@ -2,9 +2,10 @@
 
 .SYNOPSIS
 
-### THE CRUSHER v0.40###
+### THE CRUSHER SSD v0.20###
 
 Powershell script for imaging PCs at ####### Hospital. v0.40
+SSD edit - 0.20
 
 
 
@@ -20,6 +21,7 @@ shot at streamlining our process. This script automates a number of steps from C
 	* Disables integrations in GroupWise for this user and all new users
 	* !Disables IPv6 - we're not doing this anymore, but I left the code in place down there. 
 	* Restarts the computer
+	* This version also includes J#####'s customization tweaks for SSDs.
 	
 .PARAMETER
 
@@ -28,11 +30,8 @@ There are no parameters. Sorry.
 
 .NOTES
 
-I added some code to force no restarts for DISM - v0.38
-Reworked the order of events to allow for editing of default user profiles for Run on Start Menu and Groupwise Integration Disabling - v0.39
-Added yet more to allow for disabling Groupwise Integrations and adding Start Menu Run on default profiles. - v0.40
-
-
+Removed the code to force a change in pagefile size - the Dell OptiPlex 9020s have 8 gigs of RAM,
+for which the default pagefile size is most sufficient. -v0.20
  
 In order to run this script on our images, you'll need to set an Execution Policy (we
 don't like scripts in Group Policy, apparently). In Powershell, navigate to the directory
@@ -42,7 +41,7 @@ Set-ExecutionPolicy Unrestricted -Force
 
 Then, run the script by typing:
 
-.\Crusher040.ps1
+.\CrusherSSD02.ps1
 
 Good luck, Starfighter!#>
 
@@ -114,6 +113,29 @@ dism /online /disable-feature /FeatureName:MSRDC-Infrastructure /norestart
 	# Unload that registry I just talked about
 	# I get the sense that this doesn't work...either it or the command after it throws an error, but it still does the restart, so who knows. 
 	reg unload 'HKLM\ntuser'
+
+# Disable Superfetch
+Set-ItemProperty -Path "HKLM:\System\CurrentControlset\Control\Session Manager\Memory Management\PrefetchParameters" -name EnablePrefetcher -Value 0x00000000 -Type 'DWord'
+Set-ItemProperty -Path "HKLM:\System\CurrentControlset\Control\Session Manager\Memory Management\PrefetchParameters" -name EnableSuperfetch -Value 0x00000000 -Type 'DWord'
+
+
+# Function to Disable Drive Indexing
+function Disable-Indexing {
+    Param($Drive)
+    $obj = Get-WmiObject -Class Win32_Volume -Filter "DriveLetter='$Drive'"
+    $indexing = $obj.IndexingEnabled
+    if("$indexing" -eq $True){
+        write-host "Disabling indexing of drive $Drive"
+        $obj | Set-WmiInstance -Arguments @{IndexingEnabled=$False} | Out-Null
+    }
+}
+
+#Disable Drive Indexing on C:\
+Disable-Indexing "C:"
+
+# Enable TRIM
+
+fsutil behavior set disabledeletenotify 0
 
 # Return the Execution Policy to Undefined
 Set-ExecutionPolicy Undefined -Force
